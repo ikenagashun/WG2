@@ -13,6 +13,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.camera.view.PreviewView;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -315,6 +316,7 @@ public class MainActivity extends AppCompatActivity {
             }
             /* Display the result onto ImageView */
             runOnUiThread(new Runnable() {
+                @SuppressLint("SuspiciousIndentation")
                 @Override
                 public void run() {
                     if (View.VISIBLE == btnIn.getVisibility())
@@ -572,25 +574,6 @@ public class MainActivity extends AppCompatActivity {
         sBld.append("}");
         String jsonStr = sBld.toString();
 
-        // 直前の非同期処理が終わってないこともあるのでキャンセルしておく
-
-
-        // UI スレッドで通信してはならないので、AsyncTask によりワーカースレッドで通信する
-        /*
-        String url = "https://192.168.0.209/test2.php";
-        mAsyncTask = new PrivateCertificateHttpsGet(this) {
-            @Override
-            protected void onPostExecute(Object result) {
-            // UI スレッドで通信結果を処理する
-                if (result instanceof Exception) {
-                    Exception e = (Exception)result;
-                    Log.d("debug","例外発生" + e.toString() );
-                    //Toast.makeText( this, "例外発生" + e.toString(), Toast.LENGTH_SHORT ).show();
-                }
-            }
-        }.execute(url,jsonStr); // URL を渡して非同期処理を開始
-
-        */
         try {
             //FileOutputStream fileOutputstream = openFileOutput(fileName, MODE_PRIVATE);
             //fileOutputstream.write(jsonStr.getBytes());

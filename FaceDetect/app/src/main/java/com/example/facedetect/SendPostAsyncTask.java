@@ -51,7 +51,7 @@ public class SendPostAsyncTask extends AsyncTask<SendPostTaskParams, String, Str
             // assets に格納しておいたプライベート証明書だけを含む KeyStore を設定
             KeyStore ks = KeyStoreUtil.getEmptyKeyStore();
             KeyStoreUtil.loadX509Certificate(ks,
-                    mContext.getResources().getAssets().open("client.crt"));
+                    mContext.getResources().getAssets().open("cacert.pem"));
             // ホスト名の検証を行う
             HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
                 @Override
@@ -76,12 +76,12 @@ public class SendPostAsyncTask extends AsyncTask<SendPostTaskParams, String, Str
 
             SSLContext sslCon = SSLContext.getInstance("TLS");
 
-            // これが正しいけど進めない
-            //trustManager = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            //trustManager.init(ks);
-            //sslCon.init(null, trustManager.getTrustManagers(), new SecureRandom());
+            trustManager = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            trustManager.init(ks);
+            sslCon.init(null, trustManager.getTrustManagers(), new SecureRandom());
 
             // Test用
+            /*
             TrustManager x509 = new X509TrustManager() {
                 @Override
                 public X509Certificate[] getAcceptedIssuers() {
@@ -101,7 +101,7 @@ public class SendPostAsyncTask extends AsyncTask<SendPostTaskParams, String, Str
             };
 
             sslCon.init(null, new TrustManager[] { x509 }, null);
-
+*/
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setDoOutput(true);
@@ -124,7 +124,7 @@ public class SendPostAsyncTask extends AsyncTask<SendPostTaskParams, String, Str
         } catch(SSLException e) {
             // SSLException に対しユーザーに通知する等の適切な例外処理をする
             // サンプルにつき例外処理は割愛
-
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
